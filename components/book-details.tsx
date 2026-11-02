@@ -67,16 +67,8 @@ export default async function BookDetails({ id }: { id: string }) {
               <span className="text-gray-700">{book.author}</span>
             </p>
             <p>
-              <span className="font-semibold text-red-600">প্রকাশনী :</span>{" "}
-              <span className="text-gray-700">—</span>
-            </p>
-            <p>
               <span className="font-semibold text-red-600">বিষয় :</span>{" "}
               <span className="text-gray-700">{book.category ?? "—"}</span>
-            </p>
-            <p>
-              <span className="font-semibold text-red-600">পৃষ্ঠা :</span>{" "}
-              <span className="text-gray-700">—</span>
             </p>
           </div>
 
@@ -103,15 +95,6 @@ export default async function BookDetails({ id }: { id: string }) {
             </button>
             <button className="rounded-md bg-orange-500 px-5 py-2 text-sm font-semibold text-white">
               কার্টে যোগ করুন
-            </button>
-          </div>
-
-          <div className="flex gap-4 text-sm text-gray-600">
-            <button className="flex items-center gap-1">
-              <span>♡</span> Wishlist
-            </button>
-            <button className="flex items-center gap-1">
-              <span>↗</span> বন্ধুদের সাথে শেয়ার করুন
             </button>
           </div>
         </div>

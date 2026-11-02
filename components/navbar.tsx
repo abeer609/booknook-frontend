@@ -202,6 +202,11 @@ export default function Navbar() {
                     <UserIcon />
                     Profile
                   </DropdownMenuItem>
+                  {user.role === "admin" ? (
+                    <DropdownMenuItem onClick={() => router.push("/dashboard")}>
+                      Dashboard
+                    </DropdownMenuItem>
+                  ) : null}
                   <DropdownMenuItem
                     variant="destructive"
                     onClick={handleSignOut}

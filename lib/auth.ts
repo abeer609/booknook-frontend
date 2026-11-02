@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth";
 import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
+import { jwt, admin } from "better-auth/plugins";
 
 if (
   !process.env.DB_URI ||
@@ -25,4 +26,5 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     },
   },
+  plugins: [jwt(), admin()],
 });

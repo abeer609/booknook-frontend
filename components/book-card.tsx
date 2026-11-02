@@ -5,12 +5,9 @@ import { Book } from "@/lib/types";
 function BookCard({ book }: { book: Book }) {
   return (
     <Card className="rounded-md shadow-sm">
-      <Link
-        href={`/books/${book._id}`}
-        className="w-full text-left text-sm leading-snug text-foreground hover:underline"
-      >
-        <CardContent className="flex flex-col items-center gap-3 p-3">
-          <div className="flex h-62 w-41.25 items-center justify-center overflow-hidden bg-muted">
+      <Link href={`/books/${book._id}`} className="">
+        <CardContent className="flex flex-col gap-3 p-3">
+          <div className="flex h-62 w-full items-center justify-center overflow-hidden bg-muted">
             <img
               src={book.imageUrl}
               alt={book.title}
@@ -20,7 +17,7 @@ function BookCard({ book }: { book: Book }) {
             />
           </div>
 
-          {book.title}
+          <p className="text-left">{book.title}</p>
 
           <p className="w-full text-left text-xs text-muted-foreground">
             {book.author}
