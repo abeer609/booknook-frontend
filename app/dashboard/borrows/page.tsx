@@ -5,6 +5,7 @@ import axiosClient from "@/lib/axios-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 type Borrow = {
   _id: string;
@@ -96,7 +97,7 @@ export default function DashboardBorrowsPage() {
       await axiosClient.delete(`/borrows/${id}`);
       setBorrows((prev) => prev.filter((b) => b._id !== id));
     } catch {
-      alert("Delete failed");
+      toast("Delete failed");
     }
   };
 

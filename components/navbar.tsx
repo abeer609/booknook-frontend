@@ -108,7 +108,7 @@ export default function Navbar() {
 
   const goToCategory = (category: string | null) => {
     router.push(
-      category ? `/books?category=${encodeURIComponent(category)}` : "/books"
+      category ? `/books?category=${encodeURIComponent(category)}` : "/books",
     );
     setMobileOpen(false);
   };
@@ -146,9 +146,7 @@ export default function Navbar() {
           </Button>
 
           <DropdownMenu>
-            <DropdownMenuTrigger
-              render={<Button variant="ghost" />}
-            >
+            <DropdownMenuTrigger render={<Button variant="ghost" />}>
               Categories
               <ChevronDownIcon data-icon="inline-end" />
             </DropdownMenuTrigger>
@@ -249,7 +247,7 @@ export default function Navbar() {
       <div
         className={cn(
           "border-t px-4 pt-3 pb-4 md:hidden",
-          !mobileOpen && "hidden"
+          !mobileOpen && "hidden",
         )}
       >
         <div className="flex flex-col gap-1">
