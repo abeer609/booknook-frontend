@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { connection } from "next/server";
 import axiosClient from "@/lib/axios-client";
+import BorrowButton from "@/components/borrow-button";
 import { Card, CardContent } from "@/components/ui/card";
 
 type Book = {
@@ -74,11 +75,6 @@ export default async function BookDetails({ id }: { id: string }) {
 
           <p className="text-sm leading-relaxed text-gray-700">
             {book.shortDescription ?? ""}
-            {book.shortDescription ? (
-              <Link href="#" className="ml-1 font-semibold text-red-600">
-                আরো পড়ুন
-              </Link>
-            ) : null}
           </p>
 
           <div className="flex items-baseline gap-2">
@@ -90,12 +86,7 @@ export default async function BookDetails({ id }: { id: string }) {
           </div>
 
           <div className="flex gap-3">
-            <button className="rounded-md bg-red-600 px-5 py-2 text-sm font-semibold text-white">
-              অর্ডার করুন
-            </button>
-            <button className="rounded-md bg-orange-500 px-5 py-2 text-sm font-semibold text-white">
-              কার্টে যোগ করুন
-            </button>
+            <BorrowButton bookId={book._id} />
           </div>
         </div>
 

@@ -6,18 +6,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { authClient } from "@/lib/auth-client";
 
 type Borrow = {
   _id: string;
   bookId: string;
-  borrowerId: string;
+  borrower: string;
   status: "borrowed" | "returned";
   borrowedAt: string;
 };
 
 const emptyForm = {
   bookId: "",
-  borrowerId: "",
+  borrower: "",
   status: "borrowed" as "borrowed" | "returned",
 };
 
@@ -59,7 +60,7 @@ export default function DashboardBorrowsPage() {
     setEditing(b);
     setForm({
       bookId: b.bookId,
-      borrowerId: b.borrowerId,
+      borrower: b.borrower,
       status: b.status,
     });
     setError("");
@@ -71,16 +72,27 @@ export default function DashboardBorrowsPage() {
     setError("");
     setSaving(true);
     try {
+      const token = await authClient.token();
+
       if (editing) {
         const { data } = await axiosClient.patch<Borrow>(
           `/borrows/${editing._id}`,
-          form
+          form,
+          {
+            headers: {
+              Authorization: token.data?.token,
+            },
+          },
         );
         setBorrows((prev) =>
-          prev.map((b) => (b._id === editing._id ? data : b))
+          prev.map((b) => (b._id === editing._id ? data : b)),
         );
       } else {
-        const { data } = await axiosClient.post<Borrow>("/borrows", form);
+        const { data } = await axiosClient.post<Borrow>("/borrows", form, {
+          headers: {
+            Authorization: token.data?.token,
+          },
+        });
         setBorrows((prev) => [data, ...prev]);
       }
       setModalOpen(false);
@@ -120,7 +132,7 @@ export default function DashboardBorrowsPage() {
               <thead className="bg-muted">
                 <tr>
                   <th className="px-3 py-2 text-left">Book ID</th>
-                  <th className="px-3 py-2 text-left">Borrower ID</th>
+                  <th className="px-3 py-2 text-left">Borrower</th>
                   <th className="px-3 py-2 text-left">Status</th>
                   <th className="px-3 py-2 text-left">Borrowed At</th>
                   <th className="px-3 py-2 text-left">Actions</th>
@@ -130,7 +142,7 @@ export default function DashboardBorrowsPage() {
                 {paged.map((b) => (
                   <tr key={b._id} className="border-t">
                     <td className="px-3 py-2">{b.bookId}</td>
-                    <td className="px-3 py-2">{b.borrowerId}</td>
+                    <td className="px-3 py-2">{b.borrower}</td>
                     <td className="px-3 py-2">{b.status}</td>
                     <td className="px-3 py-2">
                       {b.borrowedAt
@@ -208,18 +220,16 @@ export default function DashboardBorrowsPage() {
                 <Label>Book ID</Label>
                 <Input
                   value={form.bookId}
-                  onChange={(e) =>
-                    setForm({ ...form, bookId: e.target.value })
-                  }
+                  onChange={(e) => setForm({ ...form, bookId: e.target.value })}
                   required
                 />
               </div>
               <div className="flex flex-col gap-1">
-                <Label>Borrower ID</Label>
+                <Label>Borrower</Label>
                 <Input
-                  value={form.borrowerId}
+                  value={form.borrower}
                   onChange={(e) =>
-                    setForm({ ...form, borrowerId: e.target.value })
+                    setForm({ ...form, borrower: e.target.value })
                   }
                   required
                 />
