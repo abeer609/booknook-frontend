@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import axiosClient from "@/lib/axios-client";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
@@ -129,7 +130,9 @@ export default function DashboardBorrowsPage() {
       </div>
 
       {loading ? (
-        <p className="text-muted-foreground">Loading...</p>
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <Spinner /> Loading...
+        </div>
       ) : (
         <>
           <div className="overflow-x-auto rounded-md border">

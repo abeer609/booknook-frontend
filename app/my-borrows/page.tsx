@@ -6,6 +6,7 @@ import axiosClient from "@/lib/axios-client";
 import { authClient } from "@/lib/auth-client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
 
 type Borrow = {
@@ -92,7 +93,9 @@ export default function MyBorrowsPage() {
       <div className="mx-auto w-full max-w-5xl">
         <h1 className="mb-6 text-2xl font-bold">My Borrows</h1>
         {loading ? (
-          <p className="text-muted-foreground">Loading...</p>
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Spinner /> Loading...
+          </div>
         ) : borrows.length === 0 ? (
           <p className="text-muted-foreground">You have no borrowed books.</p>
         ) : (

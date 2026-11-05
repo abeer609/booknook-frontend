@@ -1,5 +1,6 @@
 import BookCard from "@/components/book-card";
 import axiosClient from "@/lib/axios-client";
+import { Spinner } from "@/components/ui/spinner";
 import { Book } from "@/lib/types";
 export const metadata = { title: "BookNook | All Books" };
 export const instant = false;

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import axiosClient from "@/lib/axios-client";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -139,7 +140,9 @@ export default function MyBooksPage() {
       <div className="mx-auto w-full max-w-7xl">
         <h1 className="mb-6 text-2xl font-bold">My Books</h1>
         {loading ? (
-          <p className="text-muted-foreground">Loading...</p>
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Spinner /> Loading...
+          </div>
         ) : books.length === 0 ? (
           <p className="text-muted-foreground">You have no books.</p>
         ) : (
