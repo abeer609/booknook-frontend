@@ -33,6 +33,7 @@ export default function MyBorrowsPage() {
   const [borrows, setBorrows] = useState<Borrow[]>([]);
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
+  const [returning, setReturning] = useState<string | null>(null);
 
   useEffect(() => {
     document.title = "BookNook | My Borrows";
@@ -61,6 +62,7 @@ export default function MyBorrowsPage() {
   const bookMap = new Map(books.map((b) => [b._id, b]));
 
   const handleReturn = async (id: string) => {
+    setReturning(id);
     try {
       const { data: tokenData } = await authClient.token();
       const token = (tokenData as any)?.token ?? (tokenData as any)?.data?.token;
@@ -71,6 +73,8 @@ export default function MyBorrowsPage() {
       toast("Book returned");
     } catch {
       toast("Return failed");
+    } finally {
+      setReturning(null);
     }
   };
 
@@ -138,8 +142,13 @@ export default function MyBorrowsPage() {
                           size="sm"
                           variant="destructive"
                           onClick={() => handleReturn(b._id)}
+                          disabled={returning === b._id}
                         >
-                          Return Book
+                          {returning === b._id ? (
+                            <Spinner className="size-4" />
+                          ) : (
+                            "Return Book"
+                          )}
                         </Button>
                       </td>
                     </tr>
