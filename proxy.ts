@@ -4,16 +4,31 @@ import { auth } from "@/lib/auth";
 
 const adminRequired = ["/dashboard/books", "/dashboard/borrows"];
 
+const privateRoutes = [
+  "/profile",
+  "/add-book",
+  "/my-books",
+  "/my-borrows",
+  "/borrowed-books",
+];
+
 export async function proxy(request: NextRequest) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
   const { pathname } = request.nextUrl;
 
-  if (!session) {
-    return NextResponse.redirect(new URL("/sign-in", request.url));
+  const isPrivate =
+    privateRoutes.some((r) => pathname === r || pathname.startsWith(r + "/")) ||
+    pathname.startsWith("/books/");
+
+  if (isPrivate && !session) {
+    const url = new URL("/sign-in", request.url);
+    url.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(url);
   }
-  if (adminRequired.includes(pathname) && session.user.role != "admin") {
+
+  if (adminRequired.includes(pathname) && session?.user?.role != "admin") {
     return NextResponse.redirect(new URL("/forbidden", request.url));
   }
 
@@ -21,5 +36,13 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/profile", "/dashboard/:path*"], // Specify the routes the middleware applies to
+  matcher: [
+    "/profile",
+    "/add-book",
+    "/my-books",
+    "/my-borrows",
+    "/borrowed-books",
+    "/books/:path*",
+    "/dashboard/:path*",
+  ],
 };

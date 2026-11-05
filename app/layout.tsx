@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar";
+import Footer from "@/components/footer";
 import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <Navbar />
         </Suspense>
         {children}
+        <Footer />
         <Toaster />
       </body>
     </html>

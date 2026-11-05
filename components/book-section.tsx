@@ -15,11 +15,11 @@ export default async function BookSection() {
 
   return (
     <section className="bg-[#f7f5f0] px-4 py-8">
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto max-w-5xl">
         <h2 className="mb-4 text-xl font-medium text-foreground">
           নতুন সংযোজিত বই
         </h2>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-6">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-4">
           {books.map((book) => (
             <BookCard key={book._id} book={book} />
           ))}

@@ -11,6 +11,10 @@ type Book = {
   imageUrl: string;
   shortDescription?: string;
   category?: string;
+  addedBy?: string;
+  addedByEmail?: string;
+  copies?: number;
+  totalCopies?: number;
 };
 
 async function getBook(id: string): Promise<Book | null> {
@@ -71,19 +75,17 @@ export default async function BookDetails({ id }: { id: string }) {
               <span className="font-semibold text-red-600">বিষয় :</span>{" "}
               <span className="text-gray-700">{book.category ?? "—"}</span>
             </p>
+            <p>
+              <span className="font-semibold text-red-600">যোগ করেছেন :</span>{" "}
+              <span className="text-gray-700">
+                {book.addedBy ?? book.addedByEmail ?? "—"}
+              </span>
+            </p>
           </div>
 
           <p className="text-sm leading-relaxed text-gray-700">
             {book.shortDescription ?? ""}
           </p>
-
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-red-600">৳ ২২১</span>
-            <span className="text-sm text-gray-400 line-through">৳ ৩৪০</span>
-            <span className="text-sm font-semibold text-red-600">
-              (৩৫% ছাড়ে)
-            </span>
-          </div>
 
           <div className="flex gap-3">
             <BorrowButton bookId={book._id} />
@@ -111,17 +113,12 @@ export default async function BookDetails({ id }: { id: string }) {
                 />
                 <div className="flex flex-col gap-1">
                   <Link
-                    href={`/book/${b._id}`}
+                    href={`/books/${b._id}`}
                     className="text-sm font-semibold text-gray-800 hover:underline"
                   >
                     {b.title}
                   </Link>
                   <p className="text-xs text-gray-500">{b.author}</p>
-                  <div className="flex items-baseline gap-1 text-xs">
-                    <span className="font-bold text-red-600">৳ ২৭৫</span>
-                    <span className="text-gray-400 line-through">৳ ৫০০</span>
-                    <span className="text-red-600">(৪৫% ছাড়ে)</span>
-                  </div>
                 </div>
               </CardContent>
             </Card>

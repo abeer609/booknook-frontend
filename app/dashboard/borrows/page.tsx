@@ -80,7 +80,7 @@ export default function DashboardBorrowsPage() {
           form,
           {
             headers: {
-              Authorization: token.data?.token,
+              Authorization: "Bearer " + token.data?.token,
             },
           },
         );
@@ -90,7 +90,7 @@ export default function DashboardBorrowsPage() {
       } else {
         const { data } = await axiosClient.post<Borrow>("/borrows", form, {
           headers: {
-            Authorization: token.data?.token,
+            Authorization: "Bearer " + token.data?.token,
           },
         });
         setBorrows((prev) => [data, ...prev]);
@@ -104,9 +104,14 @@ export default function DashboardBorrowsPage() {
   };
 
   const handleDelete = async (id: string) => {
+    const token = await authClient.token();
     if (!confirm("Delete this borrow?")) return;
     try {
-      await axiosClient.delete(`/borrows/${id}`);
+      await axiosClient.delete(`/borrows/${id}`, {
+        headers: {
+          Authorization: "Bearer " + token.data?.token,
+        },
+      });
       setBorrows((prev) => prev.filter((b) => b._id !== id));
     } catch {
       toast("Delete failed");

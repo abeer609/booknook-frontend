@@ -1,36 +1,31 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BookNook – A Small Online Library
 
-## Getting Started
+Live Site: https://booknook.example.com
 
-First, run the development server:
+BookNook is a small online library where users can browse, add, borrow, and return books.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Browse all books with search and category filtering.
+- Add new books with details and total copies.
+- Borrow a book for 7 days and return it anytime.
+- View your borrowed books and track return dates.
+- Manage your own books with edit and delete support.
+- Authentication with email/password and Google OAuth.
+- Admin dashboard for managing books and borrows.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## API Endpoints
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Base URL: `http://localhost:8000`
 
-## Learn More
+Books:
+- `GET /books` — get all books (public)
+- `GET /books/:id` — get one book
+- `POST /books` — add a book (protected)
+- `PATCH /books/:id` — update a book (protected)
+- `DELETE /books/:id` — delete a book (protected)
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Borrows:
+- `GET /borrows` — get borrows (optional `?borrowerEmail=`)
+- `POST /borrows` — borrow a book (protected)
+- `DELETE /borrows/:id` — return a book (protected)`

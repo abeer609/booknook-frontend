@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
@@ -9,29 +9,47 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export default function SignUpPage() {
+function validatePassword(pw: string): string | null {
+  if (pw.length < 6) return "Password must be at least 6 characters";
+  if (!/[A-Z]/.test(pw)) return "Password must contain an uppercase letter";
+  if (!/[a-z]/.test(pw)) return "Password must contain a lowercase letter";
+  return null;
+}
+
+function SignUpForm() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [image, setImage] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    document.title = "BookNook | Sign Up";
+  }, []);
+
   const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    const pwError = validatePassword(password);
+    if (pwError) {
+      setError(pwError);
+      return;
+    }
     setLoading(true);
     const { error } = await authClient.signUp.email({
       name,
       email,
       password,
-      callbackURL: "/",
+      image,
+      callbackURL: "/sign-in",
     });
     setLoading(false);
     if (error) {
       setError(error.message ?? "Sign up failed");
     } else {
-      router.push("/");
+      router.push("/sign-in");
       router.refresh();
     }
   };
@@ -72,6 +90,16 @@ export default function SignUpPage() {
               />
             </div>
             <div className="flex flex-col gap-2">
+              <Label htmlFor="image">Photo URL</Label>
+              <Input
+                id="image"
+                type="url"
+                value={image}
+                onChange={(e) => setImage(e.target.value)}
+                placeholder="https://..."
+              />
+            </div>
+            <div className="flex flex-col gap-2">
               <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
@@ -85,7 +113,7 @@ export default function SignUpPage() {
               <p className="text-sm text-destructive">{error}</p>
             ) : null}
             <Button type="submit" disabled={loading} className="w-full">
-              {loading ? "Creating account..." : "Sign up"}
+              {loading ? "Creating account..." : "Register"}
             </Button>
           </form>
 
@@ -112,5 +140,13 @@ export default function SignUpPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function SignUpPage() {
+  return (
+    <Suspense fallback={null}>
+      <SignUpForm />
+    </Suspense>
   );
 }

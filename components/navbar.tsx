@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   BookOpenIcon,
-  ChevronDownIcon,
   LogOutIcon,
   MenuIcon,
   UserIcon,
@@ -24,77 +23,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-} from "@/components/ui/input-group";
-
-const CATEGORIES = [
-  "Fiction",
-  "Science",
-  "History",
-  "Kids",
-  "Academic",
-  "Others",
-] as const;
-
-function SearchForm({
-  className,
-  onNavigate,
-}: {
-  className?: string;
-  onNavigate?: () => void;
-}) {
-  const router = useRouter();
-  const [query, setQuery] = useState("");
-
-  return (
-    <form
-      role="search"
-      className={className}
-      onSubmit={(e) => {
-        e.preventDefault();
-        const q = query.trim();
-        router.push(q ? `/books?search=${encodeURIComponent(q)}` : "/books");
-        onNavigate?.();
-      }}
-    >
-      <InputGroup>
-        <InputGroupAddon align="inline-start">
-          <InputGroupButton
-            type="submit"
-            size="icon-xs"
-            variant="ghost"
-            aria-label="Search books"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.3-4.3" />
-            </svg>
-          </InputGroupButton>
-        </InputGroupAddon>
-        <InputGroupInput
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search books..."
-          aria-label="Search books"
-        />
-      </InputGroup>
-    </form>
-  );
-}
 
 export default function Navbar() {
   const router = useRouter();
@@ -106,13 +34,6 @@ export default function Navbar() {
   const user = session?.user;
   const initial = (user?.name ?? user?.email ?? "U").charAt(0).toUpperCase();
 
-  const goToCategory = (category: string | null) => {
-    router.push(
-      category ? `/books?category=${encodeURIComponent(category)}` : "/books",
-    );
-    setMobileOpen(false);
-  };
-
   const handleSignOut = async () => {
     setSigningOut(true);
     await authClient.signOut();
@@ -120,6 +41,12 @@ export default function Navbar() {
     router.push("/");
     router.refresh();
   };
+
+  const privateLinks = [
+    { href: "/add-book", label: "Add Book" },
+    { href: "/my-books", label: "My Books" },
+    { href: "/my-borrows", label: "My Borrows" },
+  ];
 
   return (
     <header className="sticky top-0 z-40 border-b bg-background">
@@ -129,12 +56,19 @@ export default function Navbar() {
       >
         <Link href="/" className="flex shrink-0 items-center gap-2">
           <BookOpenIcon aria-hidden="true" />
-          <span className="text-lg font-semibold tracking-tight">
-            BookHaven
-          </span>
+          <span className="text-lg font-semibold tracking-tight">BookNook</span>
         </Link>
 
         <div className="hidden items-center gap-1 md:flex">
+          <Button
+            variant="ghost"
+            render={<Link href="/" />}
+            nativeButton={false}
+            data-active={pathname === "/"}
+            className="data-active:bg-muted"
+          >
+            Home
+          </Button>
           <Button
             variant="ghost"
             render={<Link href="/books" />}
@@ -142,35 +76,25 @@ export default function Navbar() {
             data-active={pathname === "/books"}
             className="data-active:bg-muted"
           >
-            All books
+            All Books
           </Button>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger render={<Button variant="ghost" />}>
-              Categories
-              <ChevronDownIcon data-icon="inline-end" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuGroup>
-                <DropdownMenuItem onClick={() => goToCategory(null)}>
-                  All Categories
-                </DropdownMenuItem>
-                {CATEGORIES.map((category) => (
-                  <DropdownMenuItem
-                    key={category}
-                    onClick={() => goToCategory(category)}
-                  >
-                    {category}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {user
+            ? privateLinks.map((l) => (
+                <Button
+                  key={l.href}
+                  variant="ghost"
+                  render={<Link href={l.href} />}
+                  nativeButton={false}
+                  data-active={pathname === l.href}
+                  className="data-active:bg-muted"
+                >
+                  {l.label}
+                </Button>
+              ))
+            : null}
         </div>
 
-        <SearchForm className="ml-auto hidden w-full max-w-xs md:flex" />
-
-        <div className="hidden shrink-0 items-center gap-2 md:flex">
+        <div className="ml-auto hidden shrink-0 items-center gap-2 md:flex">
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger
@@ -183,12 +107,17 @@ export default function Navbar() {
                   />
                 }
               >
-                <span
-                  aria-hidden="true"
-                  className="flex size-6 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground"
-                >
-                  {initial}
-                </span>
+                {user.image ? (
+                  <img
+                    src={user.image}
+                    alt={user.name ?? "user"}
+                    className="size-8 rounded-full object-cover"
+                  />
+                ) : (
+                  <span className="flex size-6 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
+                    {initial}
+                  </span>
+                )}
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuGroup>
@@ -198,13 +127,8 @@ export default function Navbar() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => router.push("/profile")}>
                     <UserIcon />
-                    Profile
+                    My Profile
                   </DropdownMenuItem>
-                  {user.role === "admin" ? (
-                    <DropdownMenuItem onClick={() => router.push("/dashboard")}>
-                      Dashboard
-                    </DropdownMenuItem>
-                  ) : null}
                   <DropdownMenuItem
                     variant="destructive"
                     onClick={handleSignOut}
@@ -223,10 +147,10 @@ export default function Navbar() {
                 render={<Link href="/sign-in" />}
                 nativeButton={false}
               >
-                Sign in
+                Login
               </Button>
               <Button render={<Link href="/sign-up" />} nativeButton={false}>
-                Sign up
+                Register
               </Button>
             </>
           )}
@@ -251,10 +175,15 @@ export default function Navbar() {
         )}
       >
         <div className="flex flex-col gap-1">
-          <SearchForm
-            className="mb-2 w-full"
-            onNavigate={() => setMobileOpen(false)}
-          />
+          <Button
+            variant="ghost"
+            className="justify-start"
+            render={<Link href="/" />}
+            nativeButton={false}
+            onClick={() => setMobileOpen(false)}
+          >
+            Home
+          </Button>
           <Button
             variant="ghost"
             className="justify-start"
@@ -262,21 +191,22 @@ export default function Navbar() {
             nativeButton={false}
             onClick={() => setMobileOpen(false)}
           >
-            All books
+            All Books
           </Button>
-          <p className="px-2.5 pt-2 text-xs font-medium text-muted-foreground">
-            Categories
-          </p>
-          {CATEGORIES.map((category) => (
-            <Button
-              key={category}
-              variant="ghost"
-              className="justify-start font-normal"
-              onClick={() => goToCategory(category)}
-            >
-              {category}
-            </Button>
-          ))}
+          {user
+            ? privateLinks.map((l) => (
+                <Button
+                  key={l.href}
+                  variant="ghost"
+                  className="justify-start"
+                  render={<Link href={l.href} />}
+                  nativeButton={false}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {l.label}
+                </Button>
+              ))
+            : null}
           {user ? (
             <>
               <Button
@@ -288,7 +218,7 @@ export default function Navbar() {
                 }}
               >
                 <UserIcon data-icon="inline-start" />
-                Profile
+                My Profile
               </Button>
               <Button
                 variant="ghost"
@@ -309,7 +239,7 @@ export default function Navbar() {
                 nativeButton={false}
                 onClick={() => setMobileOpen(false)}
               >
-                Sign in
+                Login
               </Button>
               <Button
                 className="flex-1"
@@ -317,7 +247,7 @@ export default function Navbar() {
                 nativeButton={false}
                 onClick={() => setMobileOpen(false)}
               >
-                Sign up
+                Register
               </Button>
             </div>
           )}
