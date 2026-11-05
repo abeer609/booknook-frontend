@@ -73,6 +73,25 @@ export default function HomeClient() {
 
       <section className="px-4 py-8">
         <div className="mx-auto max-w-7xl">
+          <h2 className="mb-4 text-xl font-bold">Top Categories</h2>
+          <div className="flex flex-wrap gap-2">
+            {["Fiction", "Science", "History", "Kids", "Academic", "Others"].map(
+              (c) => (
+                <Link
+                  key={c}
+                  href={`/books?category=${c}`}
+                  className="rounded-full border px-4 py-2 text-sm hover:bg-muted"
+                >
+                  {c}
+                </Link>
+              )
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-4 py-8">
+        <div className="mx-auto max-w-7xl">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-xl font-bold">New Arrivals</h2>
             <Link href="/books" className="text-sm text-primary underline">
@@ -132,24 +151,6 @@ export default function HomeClient() {
         </div>
       </section>
 
-      <section className="px-4 py-8">
-        <div className="mx-auto max-w-7xl">
-          <h2 className="mb-4 text-xl font-bold">Top Categories</h2>
-          <div className="flex flex-wrap gap-2">
-            {["Fiction", "Science", "History", "Kids", "Academic", "Others"].map(
-              (c) => (
-                <Link
-                  key={c}
-                  href={`/books?category=${c}`}
-                  className="rounded-full border px-4 py-2 text-sm hover:bg-muted"
-                >
-                  {c}
-                </Link>
-              )
-            )}
-          </div>
-        </div>
-      </section>
     </main>
   );
 }
